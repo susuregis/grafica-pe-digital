@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "grafica-pe-digital",
+  "private_key_id": "ba6eb3ccc940681bd187030dacb624982d4e2835",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4qM0nARhhoWaE\nc+Af3I3H/5lb1WLj1SpYbtbmHxaiMmW9tp52j7QSPLSE1lOR22eqVcs7Md+zMcFj\nvoJOv/hw3GjcmvA9JSB0TFlpMzbSeCZl+ZPJNCDMqzsXMd55G4uwYkNUe/Te99JE\nAEJv8+cIh2RLRh0fpWtGABGWiXjjGjZol7HX56tiOPJVq0CY5nNRCPM2eVHagGol\nViokCfyd0yNp1Ovmg/vC8DcRx2YyX2xdgWS8ytCvx/v+FOk9Czq5O7dm2AemK/1A\ndKaF4oBCCQM8WtF/YqBFKyGCZqMXg2ddYN7OyxT6Jhh6HqQoyiE/bz4niY+AH7NO\npq5nIns7AgMBAAECggEAJ1NjpWvZSml6ELkwwPhShYZMnb8a+VRbWUv5njZ+tnov\nKrDqnGtMORoOg7+1OnnUYPU2e9vKPTpaaiiXTbgaa8a02k5w3US73aio3fuXMEmA\nO/Vj4NSmK5BH3E+1hms0W5MBrctcQePbNrora/YwfKOA23sKFsQ+zUCUfk+2m/6L\nYLBv4W4lhq8q+I0Le0k57VCeEgm+Qe6IltW7OystDRkyDKc4VG4+wlF+8Z4Fp8I3\nb3Txau73LnE3r7qGOm6WIRrWmH8bPQMND1OkglgFZ1ePFmXgpeYLFcbZctPFl0g5\nMroDjixARaCRi+IK4mwePBP+1gx5OrufwUvHFZ9v6QKBgQDkimnKD4unv/1p9Sj8\nmnTufnKdIvD0+dQfUVwubtUmho7M1NIr9lu6KJb5DVzlSwvOX6t/1ez9TwrDpR0W\nfWXMMbTi8rlgzOmrDd2eZDpZKWwqeMZyQSBoajaTpSQdQBSqau/HwuCqpNNgZ5c9\nUoanPuvD+qlc76Fl3ROMOqxmDQKBgQDO2KlpCqD2d5x6DpfMbzKHQI5jFk5EoqmR\ncCvoucQez+S8mnQRN9iFF2G2IyO8IlXZ8Hm++QSip2dbzb9+3whp25tzrL9CdeBk\nPUCNUDezxeQGPBZl4xq1r2AzE7tQ3mM6kpnEfE0M/iokqtlNoF/lCujILufze3nf\nhW3tyAwcZwKBgCXijAbi7NOyD+Aws8qsEBY4/+bsk+UIRRGr+wv3c34fcCykWvLO\ntAX4FI7UmEGqXxqm4Vcfr1mOcMpd5KSFxQpEcyfr9K8HSPUCJ2rKUqHVLAkeXEc0\nZJrqgIGZLpNqvAJEF9uVgojHKgMhKQERXSD8XTjvpIOzdZ3dOBBW6Z1BAoGBAMkm\nQXj48Rc9slmwH0abTFPjH5SUeICefrAEmW60WFhua05OFVk5KcIjvs3U1kd6TGqo\nRHzGxQ84JHdOWk8Srafj/AQ9lbEX2KMiPcgunjyg0OKPRGjItYzBg5eoNJyr52tq\nbUZ6aqOb93e4/aFTuG2QcldZ5g8NoLMRmpmF1OE5AoGAQIchc5O+x3tDmXyS2yov\n5bkmgsfPxLibTVwRzFNGeCuvswDlaTXW+dUqbt9q9A+GeAmhNWwocq3V1UDKG/4g\noK0CNeFkBZNVgpBnexxQvIC+k8BIVXMNrD7bdQEB5EMHs7DULu452KNQqAV51BnZ\nOEgbJK2LcVeyN8G5aFuhpWo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@grafica-pe-digital.iam.gserviceaccount.com",
+  "client_id": "105588231898422345221",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40grafica-pe-digital.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
