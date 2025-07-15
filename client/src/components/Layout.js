@@ -13,7 +13,10 @@ import {
   IconButton,
   Divider,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Avatar,
+  Tooltip,
+  Paper
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -21,7 +24,8 @@ import {
   Inventory as ProductsIcon,
   People as ClientsIcon,
   Menu as MenuIcon,
-  Print as PrintIcon
+  Logout as LogoutIcon,
+  Category as InventoryIcon
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -30,6 +34,7 @@ const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
   { text: 'Pedidos', icon: <OrdersIcon />, path: '/orders' },
   { text: 'Produtos', icon: <ProductsIcon />, path: '/products' },
+  { text: 'Estoque', icon: <InventoryIcon />, path: '/inventory' },
   { text: 'Clientes', icon: <ClientsIcon />, path: '/clients' },
 ];
 
@@ -53,45 +58,84 @@ const Layout = ({ children }) => {
 
   const drawer = (
     <div>
-      <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-        <PrintIcon sx={{ mr: 1, color: 'primary.main' }} />
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-          Gráfica PE Digital
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          p: 2,
+          background: 'linear-gradient(to bottom, rgba(25, 118, 210, 0.1), rgba(25, 118, 210, 0))'
+        }}
+      >
+        <Typography variant="subtitle1" component="div" sx={{ 
+          fontWeight: 600,
+          color: 'primary.dark',
+          letterSpacing: '-0.3px',
+          fontSize: '0.9rem',
+          textAlign: 'center',
+          lineHeight: 1.2
+        }}>
+          Copiadora Pernambuco
         </Typography>
       </Box>
       <Divider />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem 
-            button 
-            key={item.text} 
-            onClick={() => handleNavigation(item.path)}
-            selected={location.pathname === item.path}
-            sx={{
-              '&.Mui-selected': {
-                backgroundColor: 'primary.light',
-                '&:hover': {
-                  backgroundColor: 'primary.light',
-                },
-              },
-            }}
-          >
-            <ListItemIcon 
-              sx={{ 
-                color: location.pathname === item.path ? 'primary.main' : 'inherit'
-              }}
-            >
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text} 
-              primaryTypographyProps={{
-                fontWeight: location.pathname === item.path ? 'bold' : 'normal',
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
+      <Box sx={{ p: 1 }}>
+        <List sx={{ pt: 0 }}>
+          {menuItems.map((item) => {
+            const isSelected = location.pathname === item.path;
+            return (
+              <ListItem 
+                button 
+                key={item.text} 
+                onClick={() => handleNavigation(item.path)}
+                selected={isSelected}
+                sx={{
+                  mb: 0.3,
+                  borderRadius: 2,
+                  py: 0.8,
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(25, 118, 210, 0.15)',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                }}
+              >
+                <ListItemIcon 
+                  sx={{ 
+                    color: isSelected ? 'primary.main' : 'text.secondary',
+                    minWidth: 36
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={item.text} 
+                  primaryTypographyProps={{
+                    fontWeight: isSelected ? 600 : 400,
+                    fontSize: '0.9rem',
+                    color: isSelected ? 'primary.main' : 'text.primary',
+                  }}
+                />
+                {isSelected && (
+                  <Box
+                    sx={{
+                      width: 3,
+                      height: 16,
+                      borderRadius: 3,
+                      backgroundColor: 'primary.main',
+                      ml: 1
+                    }}
+                  />
+                )}
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
     </div>
   );
 
@@ -99,9 +143,11 @@ const Layout = ({ children }) => {
     <>
       <AppBar 
         position="fixed" 
+        elevation={0}
         sx={{ 
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          boxShadow: 2,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+          backgroundImage: 'linear-gradient(to right, #1976d2, #1565c0)',
         }}
       >
         <Toolbar>
@@ -110,15 +156,57 @@ const Layout = ({ children }) => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ 
+              mr: 2, 
+              display: { sm: 'none' },
+              borderRadius: 1.5
+            }}
           >
             <MenuIcon />
           </IconButton>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <PrintIcon sx={{ mr: 1, display: { xs: 'none', sm: 'block' } }} />
-            <Typography variant="h6" noWrap component="div">
-              Sistema Interno - Gráfica PE Digital
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography 
+                variant="h6" 
+                noWrap 
+                component="div" 
+                sx={{ 
+                  fontWeight: 600,
+                  letterSpacing: '-0.3px',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+                  textAlign: 'center'
+                }}
+              >
+                <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>
+                  Sistema de Gestão - 
+                </Box>
+                Copiadora Pernambuco
+              </Typography>
+            </Box>
+            
+            {/* Botão de logout */}
+            <Box sx={{ position: 'absolute', right: 16 }}>
+              <Tooltip title="Sair do sistema">
+                <IconButton 
+                  color="inherit" 
+                  onClick={() => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userEmail');
+                    navigate('/login');
+                  }}
+                  sx={{
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    borderRadius: 1.5,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                    }
+                  }}
+                >
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>
@@ -151,8 +239,19 @@ const Layout = ({ children }) => {
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
               width: drawerWidth,
-              borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+              borderRight: '1px solid rgba(0, 0, 0, 0.08)',
               boxShadow: 'none',
+              background: '#ffffff',
+              overflowY: 'auto',
+              marginTop: '64px',
+              height: 'calc(100vh - 64px)',
+              '&::-webkit-scrollbar': {
+                width: '4px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'rgba(0,0,0,0.1)',
+                borderRadius: '4px',
+              },
             },
           }}
           open
@@ -166,12 +265,31 @@ const Layout = ({ children }) => {
         component="main"
         sx={{ 
           flexGrow: 1, 
-          p: 3, 
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          p: { xs: 2, sm: 3 }, 
           marginTop: '64px',
+          marginLeft: { xs: 0, sm: `${drawerWidth}px` },
+          backgroundColor: 'background.default',
+          minHeight: 'calc(100vh - 64px)',
+          width: { xs: '100%', sm: `calc(100% - ${drawerWidth}px)` },
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
         }}
       >
-        {children}
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: { xs: 2, sm: 3 }, 
+            borderRadius: 2,
+            backgroundColor: '#ffffff',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            minHeight: 'calc(100vh - 120px)',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+            width: '100%',
+          }}
+        >
+          {children}
+        </Paper>
       </Box>
     </>
   );

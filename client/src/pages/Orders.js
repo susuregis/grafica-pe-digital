@@ -107,9 +107,9 @@ const OrderForm = ({
           required
         >
           {clients.map((client) => (
-            <option key={client.id} value={client.id}>
+            <MenuItem key={client.id} value={client.id}>
               {client.name}
-            </option>
+            </MenuItem>
           ))}
         </TextField>
       </Grid>
@@ -150,9 +150,9 @@ const OrderForm = ({
                   required
                 >
                   {products.map((product) => (
-                    <option key={product.id} value={product.nome}>
+                    <MenuItem key={product.id} value={product.nome}>
                       {product.nome}
-                    </option>
+                    </MenuItem>
                   ))}
                 </TextField>
               </Grid>
@@ -261,6 +261,7 @@ const Orders = () => {
         productService.getAll()
       ]);
       
+      console.log('Clientes carregados:', clientsResponse.data);
       setClients(clientsResponse.data);
       setProducts(productsResponse.data);
     } catch (err) {

@@ -1,15 +1,45 @@
 body {
   margin: 0;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+  font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f9ff;
+  color: #333;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+:root {
+  --primary-color: #1976d2;
+  --primary-light: #42a5f5;
+  --primary-dark: #1565c0;
+  --secondary-color: #0277bd;
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+}
+
+/* Customização de scrollbar para navegadores webkit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .main-content {
@@ -18,17 +48,76 @@ code {
 }
 
 .page-title {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  font-size: 28px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.page-title:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 60px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
 }
 
 .form-container {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 24px;
 }
 
 .table-container {
-  margin-top: 20px;
+  margin-top: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  overflow: hidden;
 }
 
 .action-buttons button {
-  margin-right: 8px;
+  margin-right: 10px;
+  text-transform: none;
+  border-radius: 8px;
+}
+
+/* Card estilizado */
+.card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Botões azuis estilizados */
+.btn-success {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2) !important;
+}
+
+.btn-success:hover {
+  background-color: var(--primary-dark) !important;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3) !important;
+}
+
+/* Status para pedidos */
+.status-chip {
+  border-radius: 12px !important;
+  font-weight: 500 !important;
+  padding: 4px 10px !important;
 }

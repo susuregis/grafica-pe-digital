@@ -44,6 +44,17 @@ const ClientForm = ({ formData, setFormData, isEdit }) => {
       <Grid item xs={12}>
         <TextField
           fullWidth
+          label="Empresa"
+          placeholder="Ex: CONSTRUTORA TENDA, EMPRESA XYZ, etc."
+          value={formData.empresa || ''}
+          onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
+          helperText="Nome da empresa do cliente (aparecerá no PDF)"
+        />
+      </Grid>
+      
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
           type="email"
           label="Email"
           value={formData.email || ''}
@@ -94,6 +105,7 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
+    empresa: '',
     email: '',
     phone: '',
     document: '',
@@ -145,6 +157,7 @@ const Clients = () => {
       // Resetar formulário
       setFormData({
         name: '',
+        empresa: '',
         email: '',
         phone: '',
         document: '',
@@ -176,6 +189,7 @@ const Clients = () => {
     setSelectedClient(client);
     setFormData({
       name: client.name,
+      empresa: client.empresa || '',
       email: client.email,
       phone: client.phone || '',
       document: client.document || '',
@@ -189,6 +203,7 @@ const Clients = () => {
   const handleOpenCreateForm = () => {
     setFormData({
       name: '',
+      empresa: '',
       email: '',
       phone: '',
       document: '',
@@ -202,6 +217,7 @@ const Clients = () => {
   const filteredClients = clients.filter(client => {
     return (
       (client.name && client.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (client.empresa && client.empresa.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (client.document && client.document.includes(searchTerm))
     );
@@ -233,7 +249,7 @@ const Clients = () => {
         <Grid item xs={12} sm={6} md={8}>
           <TextField
             fullWidth
-            placeholder="Buscar clientes por nome, email ou documento..."
+            placeholder="Buscar clientes por nome, empresa, email ou documento..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{
@@ -270,6 +286,7 @@ const Clients = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Nome</TableCell>
+                    <TableCell>Empresa</TableCell>
                     <TableCell>Email</TableCell>
                     <TableCell>Telefone</TableCell>
                     <TableCell>CNPJ/CPF</TableCell>
@@ -282,6 +299,7 @@ const Clients = () => {
                     .map((client) => (
                       <TableRow hover key={client.id}>
                         <TableCell>{client.name}</TableCell>
+                        <TableCell>{client.empresa || "-"}</TableCell>
                         <TableCell>{client.email}</TableCell>
                         <TableCell>{client.phone || "-"}</TableCell>
                         <TableCell>{client.document || "-"}</TableCell>
@@ -309,7 +327,7 @@ const Clients = () => {
                     
                   {filteredClients.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={6} align="center">
                         Nenhum cliente encontrado
                       </TableCell>
                     </TableRow>

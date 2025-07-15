@@ -1,7 +1,7 @@
 const app = require('./app');
 const path = require('path');
 const express = require('express');
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // Configuração para servir os arquivos estáticos do React em produção
 if (process.env.NODE_ENV === 'production') {

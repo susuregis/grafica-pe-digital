@@ -1,11 +1,29 @@
 const db = require('../config/firebase');
 
-// Criar item no estoque
+// Criar produto
 exports.createItem = async (req, res) => {
   try {
     const data = req.body;
+    
+    // Verifica se o produto tem materiais associados
+    if (data.materiais && Array.isArray(data.materiais) && data.materiais.length > 0) {
+      // Verificar se todos os materiais existem
+      for (const material of data.materiais) {
+        if (!material.id) continue;
+        
+        const materialRef = db.collection('materials').doc(material.id);
+        const materialDoc = await materialRef.get();
+        
+        if (!materialDoc.exists) {
+          return res.status(400).json({ 
+            message: `Material ID ${material.id} não encontrado` 
+          });
+        }
+      }
+    }
+    
     const newItem = await db.collection('products').add(data);
-    res.status(201).json({ message: 'Item de estoque criado com sucesso', id: newItem.id });
+    res.status(201).json({ message: 'Produto criado com sucesso', id: newItem.id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

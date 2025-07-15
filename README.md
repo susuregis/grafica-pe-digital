@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Sistema Interno de Gerenciamento para Gráfica PE Digital
 
 Este sistema oferece uma plataforma completa para gerenciamento interno de gráficas, incluindo:
@@ -130,3 +131,6 @@ npm start
 ## Licença
 
 Este projeto é distribuído sob a licença MIT.
+=======
+# grafica-pe-digital
+>>>>>>> f01866624dbe506c360da85bbfcfd5a6a825c94a

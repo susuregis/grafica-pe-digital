@@ -16,85 +16,311 @@ import {
   IconButton,
   Grid,
   Alert,
-  CircularProgress
+  CircularProgress,
+  MenuItem,
+  Tabs,
+  Tab,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  Select
 } from '@mui/material';
 import { 
   Add as AddIcon, 
   Search as SearchIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  Inventory as InventoryIcon
 } from '@mui/icons-material';
-import { productService } from '../services/api';
+import { productService, materialService } from '../services/api';
 import FormDialog, { ConfirmationDialog } from '../components/FormDialog';
 
 // Componente de formulário para produtos
-const ProductForm = ({ formData, setFormData, isEdit }) => {
+const ProductForm = ({ formData, setFormData, isEdit, materiais }) => {
+  // Verifica se o produto é uma camisa
+  const isTShirt = formData.categoria && formData.categoria.toLowerCase() === 'camisa';
+  const [formTab, setFormTab] = useState(0);
+  
+  // Estado local para os materiais selecionados
+  const [selectedMateriais, setSelectedMateriais] = useState(formData.materiais || []);
+
+  // Quando selectedMateriais muda, atualiza o formData
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      materiais: selectedMateriais
+    });
+  }, [selectedMateriais]);
+  
+  const handleAddMaterial = () => {
+    if (formData.materialId && formData.materialQuantidade > 0) {
+      const materialSelecionado = materiais.find(m => m.id === formData.materialId);
+      if (!materialSelecionado) return;
+      
+      // Verifica se o material já foi adicionado
+      const materialJaAdicionado = selectedMateriais.find(m => m.id === formData.materialId);
+      
+      if (materialJaAdicionado) {
+        // Atualiza a quantidade se já estiver na lista
+        setSelectedMateriais(selectedMateriais.map(m => 
+          m.id === formData.materialId 
+            ? { ...m, quantidade: formData.materialQuantidade } 
+            : m
+        ));
+      } else {
+        // Adiciona novo material à lista
+        setSelectedMateriais([
+          ...selectedMateriais, 
+          { 
+            id: materialSelecionado.id,
+            nome: materialSelecionado.nome,
+            quantidade: formData.materialQuantidade,
+            unidade: materialSelecionado.unidade || 'un'
+          }
+        ]);
+      }
+      
+      // Limpa os campos de seleção
+      setFormData({
+        ...formData,
+        materialId: '',
+        materialQuantidade: 1
+      });
+    }
+  };
+  
+  const handleRemoveMaterial = (materialId) => {
+    setSelectedMateriais(selectedMateriais.filter(m => m.id !== materialId));
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TextField
-          fullWidth
-          label="Nome do Produto"
-          value={formData.nome || ''}
-          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-          required
-        />
-      </Grid>
+    <>
+      <Tabs 
+        value={formTab} 
+        onChange={(e, newValue) => setFormTab(newValue)}
+        sx={{ mb: 2 }}
+        variant="fullWidth"
+      >
+        <Tab label="Informações Básicas" />
+        <Tab label="Materiais Necessários" />
+      </Tabs>
       
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          type="number"
-          label="Preço (R$)"
-          value={formData.preco || ''}
-          onChange={(e) => setFormData({ ...formData, preco: parseFloat(e.target.value) || 0 })}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-          }}
-          inputProps={{ min: 0, step: 0.01 }}
-          required
-        />
-      </Grid>
+      {formTab === 0 && (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Nome do Produto"
+              value={formData.nome || ''}
+              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+              required
+            />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              select
+              label="Categoria"
+              value={formData.categoria || ''}
+              onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+              required
+            >
+              <MenuItem value="camisa">Camisa</MenuItem>
+              <MenuItem value="banner">Banner</MenuItem>
+              <MenuItem value="adesivo">Adesivo</MenuItem>
+              <MenuItem value="cartão">Cartão de Visita</MenuItem>
+              <MenuItem value="papel">Papel</MenuItem>
+              <MenuItem value="outro">Outro</MenuItem>
+            </TextField>
+          </Grid>
+          
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Preço (R$)"
+              value={formData.preco || ''}
+              onChange={(e) => setFormData({ ...formData, preco: parseFloat(e.target.value) || 0 })}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+              }}
+              inputProps={{ min: 0, step: 0.01 }}
+              required
+            />
+          </Grid>
+          
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Estoque"
+              value={formData.estoque || ''}
+              onChange={(e) => setFormData({ ...formData, estoque: parseInt(e.target.value) || 0 })}
+              inputProps={{ min: 0 }}
+              required
+            />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Fornecedor"
+              value={formData.fornecedor || ''}
+              onChange={(e) => setFormData({ ...formData, fornecedor: e.target.value })}
+              required={isTShirt}
+              helperText={isTShirt ? "Obrigatório para camisas" : ""}
+            />
+          </Grid>
+          
+          {isTShirt && (
+            <>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Cor"
+                  value={formData.cor || ''}
+                  onChange={(e) => setFormData({ ...formData, cor: e.target.value })}
+                  required
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Material"
+                  value={formData.material || ''}
+                  onChange={(e) => setFormData({ ...formData, material: e.target.value })}
+                  required
+                  helperText="Ex: Algodão, Poliéster, etc."
+                />
+              </Grid>
+            </>
+          )}
+          
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Descrição"
+              value={formData.descricao || ''}
+              onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+            />
+          </Grid>
+        </Grid>
+      )}
       
-      <Grid item xs={12} sm={6}>
-        <TextField
-          fullWidth
-          type="number"
-          label="Estoque"
-          value={formData.estoque || ''}
-          onChange={(e) => setFormData({ ...formData, estoque: parseInt(e.target.value) || 0 })}
-          inputProps={{ min: 0 }}
-          required
-        />
-      </Grid>
-      
-      <Grid item xs={12}>
-        <TextField
-          fullWidth
-          multiline
-          rows={3}
-          label="Descrição"
-          value={formData.descricao || ''}
-          onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-        />
-      </Grid>
-      
-      <Grid item xs={12}>
-        <TextField
-          fullWidth
-          label="Categoria"
-          value={formData.categoria || ''}
-          onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-        />
-      </Grid>
-    </Grid>
+      {formTab === 1 && (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" gutterBottom>
+              Adicione os materiais necessários para produzir este produto
+            </Typography>
+          </Grid>
+          
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Material</InputLabel>
+              <Select
+                value={formData.materialId || ''}
+                onChange={(e) => setFormData({ ...formData, materialId: e.target.value })}
+                label="Material"
+              >
+                <MenuItem value="" disabled>
+                  Selecione um material
+                </MenuItem>
+                {materiais.map((material) => (
+                  <MenuItem key={material.id} value={material.id}>
+                    {material.nome} ({material.estoque} {material.unidade} disponíveis)
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>Selecione um material do estoque</FormHelperText>
+            </FormControl>
+          </Grid>
+          
+          <Grid item xs={12} sm={4}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Quantidade"
+              value={formData.materialQuantidade || 1}
+              onChange={(e) => setFormData({ 
+                ...formData, 
+                materialQuantidade: parseInt(e.target.value) || 1 
+              })}
+              inputProps={{ min: 1 }}
+            />
+          </Grid>
+          
+          <Grid item xs={12} sm={2}>
+            <Button 
+              fullWidth 
+              variant="contained" 
+              color="primary"
+              onClick={handleAddMaterial}
+              sx={{ height: '56px' }} // Para alinhar com os outros campos
+              disabled={!formData.materialId || !formData.materialQuantidade}
+            >
+              <AddIcon />
+            </Button>
+          </Grid>
+          
+          <Grid item xs={12}>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+              Materiais selecionados:
+            </Typography>
+            
+            {selectedMateriais.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                Nenhum material adicionado
+              </Typography>
+            ) : (
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Material</TableCell>
+                      <TableCell align="right">Quantidade</TableCell>
+                      <TableCell align="right">Unidade</TableCell>
+                      <TableCell align="center">Ações</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {selectedMateriais.map((material) => (
+                      <TableRow key={material.id}>
+                        <TableCell>{material.nome}</TableCell>
+                        <TableCell align="right">{material.quantidade}</TableCell>
+                        <TableCell align="right">{material.unidade}</TableCell>
+                        <TableCell align="center">
+                          <IconButton 
+                            size="small" 
+                            color="error"
+                            onClick={() => handleRemoveMaterial(material.id)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Grid>
+        </Grid>
+      )}
+    </>
   );
 };
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   
   // Estado para formulário e dialogs
   const [openProductForm, setOpenProductForm] = useState(false);
@@ -106,7 +332,13 @@ const Products = () => {
     preco: 0,
     estoque: 0,
     descricao: '',
-    categoria: ''
+    categoria: '',
+    fornecedor: '',
+    cor: '',
+    material: '',
+    materiais: [],
+    materialId: '',
+    materialQuantidade: 1
   });
   
   // Paginação e filtros
@@ -128,20 +360,60 @@ const Products = () => {
       setLoading(false);
     }
   };
+
+  // Carregar materiais
+  const fetchMaterials = async () => {
+    try {
+      const response = await materialService.getAll();
+      setMaterials(response.data);
+    } catch (err) {
+      console.error('Erro ao carregar materiais:', err);
+      setError('Não foi possível carregar os materiais para associação.');
+    }
+  };
   
-  // Efeito para carregar produtos na inicialização
+  // Efeito para carregar produtos e materiais na inicialização
   useEffect(() => {
-    fetchProducts();
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchProducts(), fetchMaterials()]);
+      setLoading(false);
+    };
+    
+    loadData();
   }, []);
   
   // Lidar com criação/edição de produto
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
     try {
+      // Verificação de validação para camisas
+      if (formData.categoria === 'camisa') {
+        if (!formData.fornecedor || !formData.cor || !formData.material) {
+          setError('Para camisas, os campos Fornecedor, Cor e Material são obrigatórios.');
+          return;
+        }
+      }
+
+      // Criar objeto de dados para envio
+      const productData = {
+        nome: formData.nome,
+        preco: formData.preco,
+        estoque: formData.estoque,
+        descricao: formData.descricao,
+        categoria: formData.categoria,
+        fornecedor: formData.fornecedor,
+        cor: formData.cor,
+        material: formData.material,
+        materiais: formData.materiais || []
+      };
+
       if (isEditMode && selectedProduct) {
-        await productService.update(selectedProduct.id, formData);
+        await productService.update(selectedProduct.id, productData);
+        setSuccess('Produto atualizado com sucesso!');
       } else {
-        await productService.create(formData);
+        await productService.create(productData);
+        setSuccess('Produto criado com sucesso!');
       }
       
       setOpenProductForm(false);
@@ -155,8 +427,17 @@ const Products = () => {
         preco: 0,
         estoque: 0,
         descricao: '',
-        categoria: ''
+        categoria: '',
+        fornecedor: '',
+        cor: '',
+        material: '',
+        materiais: [],
+        materialId: '',
+        materialQuantidade: 1
       });
+      
+      // Limpar mensagem de sucesso após 3 segundos
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error('Erro ao salvar produto:', err);
       setError('Não foi possível salvar o produto. Tente novamente mais tarde.');
@@ -186,7 +467,13 @@ const Products = () => {
       preco: product.preco,
       estoque: product.estoque,
       descricao: product.descricao || '',
-      categoria: product.categoria || ''
+      categoria: product.categoria || '',
+      fornecedor: product.fornecedor || '',
+      cor: product.cor || '',
+      material: product.material || '',
+      materiais: product.materiais || [],
+      materialId: '',
+      materialQuantidade: 1
     });
     setIsEditMode(true);
     setOpenProductForm(true);
@@ -199,7 +486,10 @@ const Products = () => {
       preco: 0,
       estoque: 0,
       descricao: '',
-      categoria: ''
+      categoria: '',
+      fornecedor: '',
+      cor: '',
+      material: ''
     });
     setIsEditMode(false);
     setOpenProductForm(true);
@@ -231,8 +521,14 @@ const Products = () => {
       </Typography>
       
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
           {error}
+        </Alert>
+      )}
+      
+      {success && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccess(null)}>
+          {success}
         </Alert>
       )}
       
@@ -278,8 +574,10 @@ const Products = () => {
                   <TableRow>
                     <TableCell>Nome</TableCell>
                     <TableCell>Categoria</TableCell>
+                    <TableCell>Fornecedor</TableCell>
                     <TableCell align="right">Preço</TableCell>
                     <TableCell align="right">Estoque</TableCell>
+                    <TableCell>Materiais</TableCell>
                     <TableCell align="center">Ações</TableCell>
                   </TableRow>
                 </TableHead>
@@ -290,8 +588,23 @@ const Products = () => {
                       <TableRow hover key={product.id}>
                         <TableCell>{product.nome}</TableCell>
                         <TableCell>{product.categoria || "-"}</TableCell>
+                        <TableCell>{product.fornecedor || "-"}</TableCell>
                         <TableCell align="right">R$ {(product.preco || 0).toFixed(2)}</TableCell>
                         <TableCell align="right">{product.estoque}</TableCell>
+                        <TableCell>
+                          {product.materiais && product.materiais.length > 0 ? (
+                            <Typography variant="body2">
+                              {`${product.materiais.length} ${product.materiais.length === 1 ? 'material' : 'materiais'} usado(s)`}
+                            </Typography>
+                          ) : (
+                            product.categoria === 'camisa' ? (
+                              <span>
+                                {product.material ? `Material: ${product.material}` : ''}
+                                {product.cor ? (product.material ? ', ' : '') + `Cor: ${product.cor}` : ''}
+                              </span>
+                            ) : "-"
+                          )}
+                        </TableCell>
                         <TableCell align="center">
                           <IconButton 
                             size="small" 
@@ -316,7 +629,7 @@ const Products = () => {
                     
                   {filteredProducts.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={7} align="center">
                         Nenhum produto encontrado
                       </TableCell>
                     </TableRow>
@@ -357,6 +670,7 @@ const Products = () => {
           formData={formData}
           setFormData={setFormData}
           isEdit={isEditMode}
+          materiais={materials}
         />
       </FormDialog>
       

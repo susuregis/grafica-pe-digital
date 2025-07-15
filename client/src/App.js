@@ -1,26 +1,128 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Box } from '@mui/material';
-import Dashboard from './pages/Dashboard';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/material';
+import Dashboard from './pages/Dashboard_simples';
 import Orders from './pages/Orders';
 import Products from './pages/Products';
+import Inventory from './pages/Inventory';
 import Clients from './pages/Clients';
 import OrderDetails from './pages/OrderDetails';
+import Login from './pages/Login';
 import Layout from './components/Layout';
+
+// Componente para rotas protegidas
+function ProtectedRoute({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  // Simulando verificação de autenticação
+  useEffect(() => {
+    // Verificar se há token no localStorage
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#f9fbf9'
+      }}>
+        <img 
+          src={process.env.PUBLIC_URL + '/logo.png'} 
+          alt="Copiadora Pernambuco" 
+          style={{ 
+            width: 80,
+            height: 80,
+            objectFit: 'contain',
+            marginBottom: 20
+          }} 
+        />
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
+
+  if (!isAuthenticated) {
+    // Redirecionar para login, preservando a URL original para redirecionamento após login
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/orders/:id" element={<OrderDetails />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/clients" element={<Clients />} />
-        </Routes>
-      </Layout>
-    </Box>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+
+      {/* Rotas protegidas */}
+      <Route path="/" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <Dashboard />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/orders" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <Orders />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/orders/:id" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <OrderDetails />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/products" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <Products />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/inventory" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <Inventory />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/clients" element={
+        <ProtectedRoute>
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <Layout>
+              <Clients />
+            </Layout>
+          </Box>
+        </ProtectedRoute>
+      } />
+    </Routes>
   );
 }
 

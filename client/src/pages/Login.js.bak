@@ -1,0 +1,196 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Box, 
+  Paper, 
+  TextField, 
+  Button, 
+  Typography, 
+  Container,
+  Snackbar,
+  Alert,
+  InputAdornment,
+  IconButton
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState('copiadorapernambucodigital@hotmail.com');
+  const [password, setPassword] = useState('graficarapida250');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  
+  // Verificar se o usuário já está autenticado
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // Se o usuário já estiver autenticado, redirecionar
+      const destination = location.state?.from?.pathname || '/';
+      navigate(destination);
+    }
+  }, [navigate, location]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // Verificação simplificada de credenciais
+      if (email === 'copiadorapernambucodigital@hotmail.com' && password === 'graficarapida250') {
+        // Login bem-sucedido, armazena token simulado
+        localStorage.setItem('authToken', 'simulado-token-auth-123');
+        localStorage.setItem('userEmail', email);
+        
+        // Redireciona para a dashboard ou página original
+        const destination = location.state?.from?.pathname || '/';
+        navigate(destination);
+      } else {
+        // Credenciais inválidas
+        throw new Error('invalid-credentials');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error.message);
+      let errorMessage = 'E-mail ou senha incorretos.';
+      
+      setError(errorMessage);
+      setOpenAlert(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  return (
+    <Container maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center' }}>
+      <Paper 
+        elevation={3} 
+        sx={{
+          p: 4,
+          width: '100%',
+          borderRadius: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {/* Logo da empresa */}
+        <Box sx={{ mb: 3, textAlign: 'center' }}>
+          <img 
+            src={process.env.PUBLIC_URL + '/assets/logo.png'} 
+            alt="Copiadora Pernambuco" 
+            style={{ 
+              width: '180px',
+              height: 'auto',
+              marginBottom: '10px'
+            }} 
+          />
+          <Typography 
+            variant="h5" 
+            component="h1" 
+            sx={{ 
+              color: '#007C3E', 
+              fontWeight: 'bold',
+              mt: 1
+            }}
+          >
+            COPIADORA PERNAMBUCO
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Acesse sua conta para continuar
+          </Typography>
+        </Box>
+
+        {/* Formulário de login */}
+        <Box component="form" noValidate onSubmit={handleLogin} sx={{ width: '100%' }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="E-mail"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Senha"
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ 
+              mt: 3, 
+              mb: 2, 
+              bgcolor: '#007C3E',
+              '&:hover': {
+                bgcolor: '#005c2e',
+              } 
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Entrando...' : 'Entrar'}
+          </Button>
+          
+          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            © {new Date().getFullYear()} Copiadora Pernambuco - Todos os direitos reservados
+          </Typography>
+        </Box>
+
+        {/* Mensagens de erro */}
+        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+          <Alert onClose={handleCloseAlert} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      </Paper>
+    </Container>
+  );
+}
+
+export default Login;

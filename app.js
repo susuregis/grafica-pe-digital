@@ -11,6 +11,27 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API funcionando!' });
 });
 
+// Rota de teste para materiais
+app.get('/api/materials-test', async (req, res) => {
+  try {
+    const db = require('./config/firebase');
+    const snapshot = await db.collection('materials').get();
+    res.json({ 
+      message: 'Teste de materiais realizado com sucesso', 
+      count: snapshot.size,
+      firebaseOk: true
+    });
+  } catch (error) {
+    console.error('Erro no teste de materiais:', error);
+    res.status(500).json({ 
+      message: 'Erro no teste de materiais', 
+      error: error.message,
+      stack: error.stack,
+      firebaseOk: false
+    });
+  }
+});
+
 
 
 // Middleware para CORS - permitindo todas as origens para desenvolvimento
@@ -41,7 +62,12 @@ const productsRoutes = require('./routes/productsRoutes');
 app.use('/api/products', productsRoutes);
 app.use('/products', productsRoutes); // Mantendo compatibilidade
 
-const dashboardRoutes = require('./routes/dashboardRoutes');
+const materialsRoutes = require('./routes/materialsRoutes');
+app.use('/api/materials', materialsRoutes);
+app.use('/materials', materialsRoutes); // Mantendo compatibilidade
+
+// Use o arquivo de rotas do dashboard com dados reais
+const dashboardRoutes = require('./routes/dashboard');
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/dashboard', dashboardRoutes); // Mantendo compatibilidade
 

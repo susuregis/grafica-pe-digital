@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Executar Backend",
+			"type": "shell",
+			"command": "npm start",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Executar Frontend",
+			"type": "shell",
+			"command": "npm start",
+			"options": {
+				"cwd": "${workspaceFolder}/client"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

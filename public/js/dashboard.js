@@ -28,9 +28,9 @@ function setupDashboardControls() {
 function loadDailyRevenue(date = new Date().toISOString().slice(0, 10)) {
     const chartContainer = document.getElementById('daily-revenue-chart');
     chartContainer.innerHTML = '<div class="text-center p-5"><div class="loading-spinner"></div><p class="mt-2">Carregando...</p></div>';
-    const backendUrl = 'http://localhost:3001';
+    const backendUrl = 'http://localhost:3002';
 
-    fetch(`${backendUrl}/dashboard/daily-revenue?date=${date}`)
+    fetch(`${backendUrl}/api/dashboard/daily-revenue?date=${date}`)
         .then(response => response.json())
         .then(data => {
             renderDailyRevenue(data);
@@ -44,9 +44,9 @@ function loadDailyRevenue(date = new Date().toISOString().slice(0, 10)) {
 function loadMonthlyRevenue(month = new Date().toISOString().slice(0, 7)) {
     const chartContainer = document.getElementById('monthly-revenue-chart');
     chartContainer.innerHTML = '<div class="text-center p-5"><div class="loading-spinner"></div><p class="mt-2">Carregando...</p></div>';
-    const backendUrl = 'http://localhost:3001';
+    const backendUrl = 'http://localhost:3002';
 
-    fetch(`${backendUrl}/dashboard/monthly-revenue?month=${month}`)
+    fetch(`${backendUrl}/api/dashboard/monthly-revenue?month=${month}`)
         .then(response => response.json())
         .then(data => {
             renderMonthlyRevenue(data);
@@ -627,10 +627,10 @@ function loadDailyRevenue(date) {
     cardBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Carregando dados...</p></div>';
     
     // URL base do backend
-    const backendUrl = 'http://localhost:3001';
+    const backendUrl = 'http://localhost:3002';
     
     // Buscar dados de faturamento diário para a data selecionada
-    fetch(`${backendUrl}/dashboard/daily-revenue?date=${date}`)
+    fetch(`${backendUrl}/api/dashboard/daily-revenue?date=${date}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Falha ao carregar dados de faturamento diário');
@@ -696,10 +696,10 @@ function loadMonthlyRevenue(month) {
     summaryDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Carregando dados...</p></div>';
     
     // URL base do backend
-    const backendUrl = 'http://localhost:3001';
+    const backendUrl = 'http://localhost:3002';
     
     // Buscar dados de faturamento mensal para o mês selecionado
-    fetch(`${backendUrl}/dashboard/monthly-revenue?month=${month}`)
+    fetch(`${backendUrl}/api/dashboard/monthly-revenue?month=${month}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Falha ao carregar dados de faturamento mensal');

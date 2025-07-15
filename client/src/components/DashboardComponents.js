@@ -10,16 +10,39 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export const DashboardCard = ({ title, value, loading, icon, color }) => {
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h6" color="text.secondary" gutterBottom>{title}</Typography>
+      <CardContent sx={{ 
+        flexGrow: 1, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        textAlign: 'center',
+        padding: '16px'
+      }}>
+        <Typography 
+          variant="h6" 
+          color="text.secondary" 
+          gutterBottom 
+          align="center"
+          sx={{ width: '100%', textAlign: 'center' }}
+        >
+          {title}
+        </Typography>
         
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center',
+          justifyContent: 'center', 
+          mt: 2,
+          width: '100%'
+        }}>
           <Box sx={{
             backgroundColor: `${color}.light`,
             color: `${color}.dark`,
             borderRadius: '50%',
             p: 1,
-            mr: 2,
+            mb: 2,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -30,7 +53,17 @@ export const DashboardCard = ({ title, value, loading, icon, color }) => {
           {loading ? (
             <CircularProgress size={24} />
           ) : (
-            <Typography variant="h4">{value}</Typography>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                fontWeight: 'bold', 
+                color: `${color}.main`,
+                width: '100%',
+                textAlign: 'center'
+              }}
+            >
+              {value}
+            </Typography>
           )}
         </Box>
       </CardContent>
